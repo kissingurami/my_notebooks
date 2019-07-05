@@ -3,15 +3,19 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+  - jupyter
   - numpy
   - pandas
   - scikit-learn
+  - keras
+  - nltk
   - matplotlib
   - seaborn
   - watermark
   - tqdm
   - joblib
   - tpot
+  - beautifulsoup4
   - pip:
     - twitter
     - googlemaps
