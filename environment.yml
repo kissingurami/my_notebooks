@@ -4,7 +4,7 @@ channels:
   - defaults
 dependencies:
   - jupyter
-  - numpy
+  - numpy==1.16.1
   - pandas
   - scikit-learn
   - keras
@@ -16,6 +16,8 @@ dependencies:
   - joblib
   - tpot
   - beautifulsoup4
+  - mkl-service
+  - blas
   - pip:
     - twitter
     - googlemaps
