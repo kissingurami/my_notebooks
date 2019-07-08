@@ -1,0 +1,6 @@
+name: tf
+channels:
+  - defaults
+dependencies:
+  - tensorflow-gpu==1.14.0
+  - keras
