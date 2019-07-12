@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>HMM Tagger</title>
+<title>HMM warmup (optional)-zh</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13116,64 +13116,30 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Project:-Part-of-Speech-Tagging-with-Hidden-Markov-Models">Project: Part of Speech Tagging with Hidden Markov Models<a class="anchor-link" href="#Project:-Part-of-Speech-Tagging-with-Hidden-Markov-Models">&#182;</a></h1><hr>
-<h3 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h3><p>Part of speech tagging is the process of determining the syntactic category of a word from the words in its surrounding context. It is often used to help disambiguate natural language phrases because it can be done quickly with high accuracy. Tagging can be used for many NLP tasks like determining correct pronunciation during speech synthesis (for example, <em>dis</em>-count as a noun vs dis-<em>count</em> as a verb), for information retrieval, and for word sense disambiguation.</p>
-<p>In this notebook, you'll use the <a href="http://pomegranate.readthedocs.io/">Pomegranate</a> library to build a hidden Markov model for part of speech tagging using a "universal" tagset. Hidden Markov models have been able to achieve <a href="http://www.coli.uni-saarland.de/~thorsten/publications/Brants-ANLP00.pdf">&gt;96% tag accuracy with larger tagsets on realistic text corpora</a>. Hidden Markov models have also been used for speech recognition and speech generation, machine translation, gene recognition for bioinformatics, and human gesture recognition for computer vision, and more.</p>
-<p><img src="_post-hmm.png" alt=""></p>
-<p>The notebook already contains some code to get you started. You only need to add some new functionality in the areas indicated to complete the project; you will not need to modify the included code beyond what is requested. Sections that begin with <strong>'IMPLEMENTATION'</strong> in the header indicate that you must provide code in the block that follows. Instructions will be provided for each section, and the specifics of the implementation are marked in the code block with a 'TODO' statement. Please be sure to read the instructions carefully!</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="&#38544;&#39532;&#23572;&#21487;&#22827;&#27169;&#22411;&#31616;&#20171;&#65288;&#21487;&#36873;&#39033;&#30446;&#65289;">&#38544;&#39532;&#23572;&#21487;&#22827;&#27169;&#22411;&#31616;&#20171;&#65288;&#21487;&#36873;&#39033;&#30446;&#65289;<a class="anchor-link" href="#&#38544;&#39532;&#23572;&#21487;&#22827;&#27169;&#22411;&#31616;&#20171;&#65288;&#21487;&#36873;&#39033;&#30446;&#65289;">&#182;</a></h1><hr>
+<h3 id="&#31616;&#20171;">&#31616;&#20171;<a class="anchor-link" href="#&#31616;&#20171;">&#182;</a></h3><p>在此 notebook 中，你将使用 <a href="http://pomegranate.readthedocs.io/en/latest/index.html">Pomegranate</a> 库构建一个简单的隐马尔可夫模型，并了解 Pomegranate API。</p>
 <div class="alert alert-block alert-info">
-**Note:** Once you have completed all of the code implementations, you need to finalize your work by exporting the iPython Notebook as an HTML document. Before exporting the notebook to html, all of the code cells need to have been run so that reviewers can see the final implementation and output. You must then **export the notebook** by running the last cell in the notebook, or by using the menu above and navigating to **File -> Download as -> HTML (.html)** Your submissions should include both the `html` and `ipynb` files.
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
+**注意：**你并非必须完成此 notebook，并且不会与你的项目一期提交，此项目旨在快速介绍 Pomegranate 库的相关部分，你在完成词性标签器时需要用到此库。
+</div><p>该 notebook 已经包含一些帮助你着手编程的代码。你只需在有标记的地方添加一些新的功能；除此之外，不需要修改所提供的代码。标题中以<strong>实现</strong>开头的部分表明你必须在下面的代码块中提供代码。我们会在每个部分提供说明，并在以 'TODO' 语句开头的代码块中提供实现细节。请务必仔细阅读说明！</p>
 <div class="alert alert-block alert-info">
-**Note:** Code and Markdown cells can be executed using the `Shift + Enter` keyboard shortcut. Markdown cells can be edited by double-clicking the cell to enter edit mode.
+**注意：**可以通过 `Shift + Enter` 键盘快捷键执行代码和标记单元格，也可以通过双击单元格进入编辑模式，编辑标记单元格。
 </div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="The-Road-Ahead">The Road Ahead<a class="anchor-link" href="#The-Road-Ahead">&#182;</a></h3><p>You must complete Steps 1-3 below to pass the project. The section on Step 4 includes references &amp; resources you can use to further explore HMM taggers.</p>
-<ul>
-<li><a href="#Step-1:-Read-and-preprocess-the-dataset">Step 1</a>: Review the provided interface to load and access the text corpus</li>
-<li><a href="#Step-2:-Build-a-Most-Frequent-Class-tagger">Step 2</a>: Build a Most Frequent Class tagger to use as a baseline</li>
-<li><a href="#Step-3:-Build-an-HMM-tagger">Step 3</a>: Build an HMM Part of Speech tagger and compare to the MFC baseline</li>
-<li><a href="#Step-4:-[Optional]-Improving-model-performance">Step 4</a>: (Optional) Improve the HMM tagger</li>
-</ul>
+<hr>
 
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <div class="alert alert-block alert-warning">
-**Note:** Make sure you have selected a **Python 3** kernel in Workspaces or the hmm-tagger conda environment if you are running the Jupyter server on your own machine.
+**注意：**确保在 Workspace 中选择 **Python 3** 内核，如果你是在自己的机子上运行 Jupyter 服务器，则选择 hmm-tagger conda 环境。
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Jupyter &quot;magic methods&quot; -- only need to be run once per kernel restart</span>
 <span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">aimport</span> helpers, tests
+<span class="o">%</span><span class="k">aimport</span> helpers
 <span class="o">%</span><span class="k">autoreload</span> 1
 </pre></div>
 
@@ -13181,39 +13147,17 @@ div#notebook {
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>The autoreload extension is already loaded. To reload it, use:
-  %reload_ext autoreload
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import python modules -- this cell needs to be run again if you make changes to any of the files</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="k">import</span> <span class="n">HTML</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">helpers</span> <span class="k">import</span> <span class="n">show_model</span><span class="p">,</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">helpers</span> <span class="k">import</span> <span class="n">show_model</span>
 <span class="kn">from</span> <span class="nn">pomegranate</span> <span class="k">import</span> <span class="n">State</span><span class="p">,</span> <span class="n">HiddenMarkovModel</span><span class="p">,</span> <span class="n">DiscreteDistribution</span>
 </pre></div>
 
@@ -13225,1272 +13169,20 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Step-1:-Read-and-preprocess-the-dataset">Step 1: Read and preprocess the dataset<a class="anchor-link" href="#Step-1:-Read-and-preprocess-the-dataset">&#182;</a></h2><hr>
-<p>We'll start by reading in a text corpus and splitting it into a training and testing dataset. The data set is a copy of the <a href="https://en.wikipedia.org/wiki/Brown_Corpus">Brown corpus</a> (originally from the <a href="https://www.nltk.org/">NLTK</a> library) that has already been pre-processed to only include the <a href="https://arxiv.org/pdf/1104.2086.pdf">universal tagset</a>. You should expect to get slightly higher accuracy using this simplified tagset than the same model would achieve on a larger tagset like the full <a href="https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html">Penn treebank tagset</a>, but the process you'll follow would be the same.</p>
-<p>The <code>Dataset</code> class provided in helpers.py will read and parse the corpus. You can generate your own datasets compatible with the reader by writing them to the following format. The dataset is stored in plaintext as a collection of words and corresponding tags. Each sentence starts with a unique identifier on the first line, followed by one tab-separated word/tag pair on each following line. Sentences are separated by a single blank line.</p>
-<p>Example from the Brown corpus.</p>
-
-<pre><code>b100-38532
-Perhaps ADV
-it  PRON
-was VERB
-right   ADJ
-;   .
-;   .
-
-b100-35577
-...</code></pre>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;tags-universal.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;brown-universal.txt&quot;</span><span class="p">,</span> <span class="n">train_test_split</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are </span><span class="si">{}</span><span class="s2"> sentences in the corpus.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are </span><span class="si">{}</span><span class="s2"> sentences in the training set.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are </span><span class="si">{}</span><span class="s2"> sentences in the testing set.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="p">)))</span>
-
-<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="p">),</span> \
-       <span class="s2">&quot;The number of sentences in the training set + testing set should sum to the number of sentences in the corpus&quot;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>There are 57340 sentences in the corpus.
-There are 45872 sentences in the training set.
-There are 11468 sentences in the testing set.
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="The-Dataset-Interface">The Dataset Interface<a class="anchor-link" href="#The-Dataset-Interface">&#182;</a></h3><p>You can access (mostly) immutable references to the dataset through a simple interface provided through the <code>Dataset</code> class, which represents an iterable collection of sentences along with easy access to partitions of the data for training &amp; testing. Review the reference below, then run and review the next few cells to make sure you understand the interface before moving on to the next step.</p>
-
-<pre><code>Dataset-only Attributes:
-    training_set - reference to a Subset object containing the samples for training
-    testing_set - reference to a Subset object containing the samples for testing
-
-Dataset &amp; Subset Attributes:
-    sentences - a dictionary with an entry {sentence_key: Sentence()} for each sentence in the corpus
-    keys - an immutable ordered (not sorted) collection of the sentence_keys for the corpus
-    vocab - an immutable collection of the unique words in the corpus
-    tagset - an immutable collection of the unique tags in the corpus
-    X - returns an array of words grouped by sentences ((w11, w12, w13, ...), (w21, w22, w23, ...), ...)
-    Y - returns an array of tags grouped by sentences ((t11, t12, t13, ...), (t21, t22, t23, ...), ...)
-    N - returns the number of distinct samples (individual words or tags) in the dataset
-
-Methods:
-    stream() - returns an flat iterable over all (word, tag) pairs across all sentences in the corpus
-    __iter__() - returns an iterable over the data as (sentence_key, Sentence()) pairs
-    __len__() - returns the nubmer of sentences in the dataset</code></pre>
-<p>For example, consider a Subset, <code>subset</code>, of the sentences <code>{"s0": Sentence(("See", "Spot", "run"), ("VERB", "NOUN", "VERB")), "s1": Sentence(("Spot", "ran"), ("NOUN", "VERB"))}</code>. The subset will have these attributes:</p>
-
-<pre><code>subset.keys == {"s1", "s0"}  # unordered
-subset.vocab == {"See", "run", "ran", "Spot"}  # unordered
-subset.tagset == {"VERB", "NOUN"}  # unordered
-subset.X == (("Spot", "ran"), ("See", "Spot", "run"))  # order matches .keys
-subset.Y == (("NOUN", "VERB"), ("VERB", "NOUN", "VERB"))  # order matches .keys
-subset.N == 7  # there are a total of seven observations over all sentences
-len(subset) == 2  # because there are two sentences</code></pre>
-<div class="alert alert-block alert-info">
-**Note:** The `Dataset` class is _convenient_, but it is **not** efficient. It is not suitable for huge datasets because it stores multiple redundant copies of the same data.
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Sentences">Sentences<a class="anchor-link" href="#Sentences">&#182;</a></h4><p><code>Dataset.sentences</code> is a dictionary of all sentences in the training corpus, each keyed to a unique sentence identifier. Each <code>Sentence</code> is itself an object with two attributes: a tuple of the words in the sentence named <code>words</code> and a tuple of the tag corresponding to each word named <code>tags</code>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;b100-38532&#39;</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sentence: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;words:</span><span class="se">\n\t</span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sentences</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">words</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tags:</span><span class="se">\n\t</span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sentences</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Sentence: b100-38532
-words:
-	(&#39;Perhaps&#39;, &#39;it&#39;, &#39;was&#39;, &#39;right&#39;, &#39;;&#39;, &#39;;&#39;)
-tags:
-	(&#39;ADV&#39;, &#39;PRON&#39;, &#39;VERB&#39;, &#39;ADJ&#39;, &#39;.&#39;, &#39;.&#39;)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<div class="alert alert-block alert-info">
-**Note:** The underlying iterable sequence is **unordered** over the sentences in the corpus; it is not guaranteed to return the sentences in a consistent order between calls. Use `Dataset.stream()`, `Dataset.keys`, `Dataset.X`, or `Dataset.Y` attributes if you need ordered access to the data.
-</div><h4 id="Counting-Unique-Elements">Counting Unique Elements<a class="anchor-link" href="#Counting-Unique-Elements">&#182;</a></h4><p>You can access the list of unique words (the dataset vocabulary) via <code>Dataset.vocab</code> and the unique list of tags via <code>Dataset.tagset</code>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are a total of </span><span class="si">{}</span><span class="s2"> samples of </span><span class="si">{}</span><span class="s2"> unique words in the corpus.&quot;</span>
-      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">vocab</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are </span><span class="si">{}</span><span class="s2"> samples of </span><span class="si">{}</span><span class="s2"> unique words in the training set.&quot;</span>
-      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">vocab</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are </span><span class="si">{}</span><span class="s2"> samples of </span><span class="si">{}</span><span class="s2"> unique words in the testing set.&quot;</span>
-      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="o">.</span><span class="n">vocab</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are </span><span class="si">{}</span><span class="s2"> words in the test set that are missing in the training set.&quot;</span>
-      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="o">.</span><span class="n">vocab</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">vocab</span><span class="p">)))</span>
-
-<span class="k">assert</span> <span class="n">data</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> \
-       <span class="s2">&quot;The number of training + test samples should sum to the total number of samples&quot;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>There are a total of 1161192 samples of 56057 unique words in the corpus.
-There are 928458 samples of 50536 unique words in the training set.
-There are 232734 samples of 25112 unique words in the testing set.
-There are 5521 words in the test set that are missing in the training set.
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Accessing-word-and-tag-Sequences">Accessing word and tag Sequences<a class="anchor-link" href="#Accessing-word-and-tag-Sequences">&#182;</a></h4><p>The <code>Dataset.X</code> and <code>Dataset.Y</code> attributes provide access to ordered collections of matching word and tag sequences for each sentence in the dataset.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># accessing words with Dataset.X and tags with Dataset.Y </span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>    
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sentence </span><span class="si">{}</span><span class="s2">:&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">data</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-    <span class="nb">print</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Labels </span><span class="si">{}</span><span class="s2">:&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">data</span><span class="o">.</span><span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-    <span class="nb">print</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Sentence 1: (&#39;Mr.&#39;, &#39;Podger&#39;, &#39;had&#39;, &#39;thanked&#39;, &#39;him&#39;, &#39;gravely&#39;, &#39;,&#39;, &#39;and&#39;, &#39;now&#39;, &#39;he&#39;, &#39;made&#39;, &#39;use&#39;, &#39;of&#39;, &#39;the&#39;, &#39;advice&#39;, &#39;.&#39;)
-
-Labels 1: (&#39;NOUN&#39;, &#39;NOUN&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;PRON&#39;, &#39;ADV&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;ADV&#39;, &#39;PRON&#39;, &#39;VERB&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;.&#39;)
-
-Sentence 2: (&#39;But&#39;, &#39;there&#39;, &#39;seemed&#39;, &#39;to&#39;, &#39;be&#39;, &#39;some&#39;, &#39;difference&#39;, &#39;of&#39;, &#39;opinion&#39;, &#39;as&#39;, &#39;to&#39;, &#39;how&#39;, &#39;far&#39;, &#39;the&#39;, &#39;board&#39;, &#39;should&#39;, &#39;go&#39;, &#39;,&#39;, &#39;and&#39;, &#39;whose&#39;, &#39;advice&#39;, &#39;it&#39;, &#39;should&#39;, &#39;follow&#39;, &#39;.&#39;)
-
-Labels 2: (&#39;CONJ&#39;, &#39;PRT&#39;, &#39;VERB&#39;, &#39;PRT&#39;, &#39;VERB&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;ADP&#39;, &#39;ADV&#39;, &#39;ADV&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;PRON&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;.&#39;)
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Accessing-(word,-tag)-Samples">Accessing (word, tag) Samples<a class="anchor-link" href="#Accessing-(word,-tag)-Samples">&#182;</a></h4><p>The <code>Dataset.stream()</code> method returns an iterator that chains together every pair of (word, tag) entries across all sentences in the entire corpus.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># use Dataset.stream() (word, tag) samples for the entire corpus</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Stream (word, tag) pairs:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">stream</span><span class="p">()):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pair</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span> <span class="k">break</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>
-Stream (word, tag) pairs:
-
-	 (&#39;Mr.&#39;, &#39;NOUN&#39;)
-	 (&#39;Podger&#39;, &#39;NOUN&#39;)
-	 (&#39;had&#39;, &#39;VERB&#39;)
-	 (&#39;thanked&#39;, &#39;VERB&#39;)
-	 (&#39;him&#39;, &#39;PRON&#39;)
-	 (&#39;gravely&#39;, &#39;ADV&#39;)
-	 (&#39;,&#39;, &#39;.&#39;)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>For both our baseline tagger and the HMM model we'll build, we need to estimate the frequency of tags &amp; words from the frequency counts of observations in the training corpus. In the next several cells you will complete functions to compute the counts of several sets of counts.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Step-2:-Build-a-Most-Frequent-Class-tagger">Step 2: Build a Most Frequent Class tagger<a class="anchor-link" href="#Step-2:-Build-a-Most-Frequent-Class-tagger">&#182;</a></h2><hr>
-<p>Perhaps the simplest tagger (and a good baseline for tagger performance) is to simply choose the tag most frequently assigned to each word. This "most frequent class" tagger inspects each observed word in the sequence and assigns it the label that was most often assigned to that word in the corpus.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="IMPLEMENTATION:-Pair-Counts">IMPLEMENTATION: Pair Counts<a class="anchor-link" href="#IMPLEMENTATION:-Pair-Counts">&#182;</a></h3><p>Complete the function below that computes the joint frequency counts for two input sequences.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">pair_counts</span><span class="p">(</span><span class="n">sequences_A</span><span class="p">,</span> <span class="n">sequences_B</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a dictionary keyed to each unique value in the first sequence list</span>
-<span class="sd">    that counts the number of occurrences of the corresponding value from the</span>
-<span class="sd">    second sequences list.</span>
-<span class="sd">    </span>
-<span class="sd">    For example, if sequences_A is tags and sequences_B is the corresponding</span>
-<span class="sd">    words, then if 1244 sequences contain the word &quot;time&quot; tagged as a NOUN, then</span>
-<span class="sd">    you should return a dictionary such that pair_counts[NOUN][time] == 1244</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: Finish this function!</span>
-    <span class="c1"># raise NotImplementedError</span>
-
-    <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
-    <span class="n">emission_counts</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span> <span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">tag</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sequences_A</span><span class="p">,</span> <span class="n">sequences_B</span><span class="p">):</span>
-        <span class="n">emission_counts</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">word</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="n">emission_counts</span>
-
-
-<span class="c1"># Calculate C(t_i, w_i)</span>
-<span class="n">emission_counts</span> <span class="o">=</span> <span class="n">pair_counts</span><span class="p">((</span><span class="n">tag</span>  <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">Y</span> <span class="k">for</span> <span class="n">tag</span>  <span class="ow">in</span> <span class="n">sentence</span><span class="p">),</span> 
-                              <span class="p">(</span><span class="n">word</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">X</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">sentence</span><span class="p">))</span>
-
-<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">emission_counts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">12</span><span class="p">,</span> \
-       <span class="s2">&quot;Uh oh. There should be 12 tags in your dictionary.&quot;</span>
-<span class="k">assert</span> <span class="nb">max</span><span class="p">(</span><span class="n">emission_counts</span><span class="p">[</span><span class="s2">&quot;NOUN&quot;</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="n">emission_counts</span><span class="p">[</span><span class="s2">&quot;NOUN&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> \
-       <span class="s2">&quot;Hmmm...&#39;time&#39; is expected to be the most common NOUN.&quot;</span>
-<span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;alert alert-block alert-success&quot;&gt;Your emission counts look good!&lt;/div&gt;&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[9]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div class="alert alert-block alert-success">Your emission counts look good!</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="IMPLEMENTATION:-Most-Frequent-Class-Tagger">IMPLEMENTATION: Most Frequent Class Tagger<a class="anchor-link" href="#IMPLEMENTATION:-Most-Frequent-Class-Tagger">&#182;</a></h3><p>Use the <code>pair_counts()</code> function and the training dataset to find the most frequent class label for each word in the training data, and populate the <code>mfc_table</code> below. The table keys should be words, and the values should be the appropriate tag string.</p>
-<p>The <code>MFCTagger</code> class is provided to mock the interface of Pomegranite HMM models so that they can be used interchangeably.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create a lookup table mfc_table where mfc_table[word] contains the tag label most frequently assigned to that word</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
-
-<span class="n">FakeState</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;FakeState&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)</span>
-
-<span class="k">class</span> <span class="nc">MFCTagger</span><span class="p">:</span>
-    <span class="c1"># NOTE: You should not need to modify this class or any of its methods</span>
-    <span class="n">missing</span> <span class="o">=</span> <span class="n">FakeState</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;&lt;MISSING&gt;&quot;</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">MFCTagger</span><span class="o">.</span><span class="n">missing</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">word</span><span class="p">:</span> <span class="n">FakeState</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
-        
-    <span class="k">def</span> <span class="nf">viterbi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This method simplifies predictions by matching the Pomegranate viterbi() interface&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="mf">0.</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;&lt;start&gt;&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;&lt;end&gt;&quot;</span><span class="p">]))</span>
-
-
-<span class="c1"># TODO: calculate the frequency of each tag being assigned to each word (hint: similar, but not</span>
-<span class="c1"># the same as the emission probabilities) and use it to fill the mfc_table</span>
-
-<span class="n">word_counts</span> <span class="o">=</span> <span class="n">pair_counts</span><span class="p">((</span><span class="n">word</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">X</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">sentence</span><span class="p">),</span> 
-                          <span class="p">(</span><span class="n">tag</span>  <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">Y</span> <span class="k">for</span> <span class="n">tag</span>  <span class="ow">in</span> <span class="n">sentence</span><span class="p">))</span>
-
-<span class="n">mfc_table</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">tags</span> <span class="ow">in</span> <span class="n">word_counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">tag</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span>  <span class="nb">max</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">mfc_table</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">tag</span>
-
-
-<span class="c1"># DO NOT MODIFY BELOW THIS LINE</span>
-<span class="n">mfc_model</span> <span class="o">=</span> <span class="n">MFCTagger</span><span class="p">(</span><span class="n">mfc_table</span><span class="p">)</span> <span class="c1"># Create a Most Frequent Class tagger instance</span>
-
-<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">mfc_table</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">vocab</span><span class="p">),</span> <span class="s2">&quot;&quot;</span>
-<span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">vocab</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">mfc_table</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="s2">&quot;&quot;</span>
-<span class="k">assert</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mfc_table</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5521</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
-<span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;alert alert-block alert-success&quot;&gt;Your MFC tagger has all the correct words!&lt;/div&gt;&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[10]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div class="alert alert-block alert-success">Your MFC tagger has all the correct words!</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Making-Predictions-with-a-Model">Making Predictions with a Model<a class="anchor-link" href="#Making-Predictions-with-a-Model">&#182;</a></h3><p>The helper functions provided below interface with Pomegranate network models &amp; the mocked MFCTagger to take advantage of the <a href="http://pomegranate.readthedocs.io/en/latest/nan.html">missing value</a> functionality in Pomegranate through a simple sequence decoding function. Run these functions, then run the next cell to see some of the predictions made by the MFC tagger.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">replace_unknown</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a copy of the input sequence where each unknown word is replaced</span>
-<span class="sd">    by the literal string value &#39;nan&#39;. Pomegranate will ignore these values</span>
-<span class="sd">    during computation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">w</span> <span class="k">if</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">vocab</span> <span class="k">else</span> <span class="s1">&#39;nan&#39;</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">]</span>
-
-<span class="k">def</span> <span class="nf">simplify_decoding</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;X should be a 1-D sequence of observations for the model to predict&quot;&quot;&quot;</span>
-    <span class="n">_</span><span class="p">,</span> <span class="n">state_path</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">viterbi</span><span class="p">(</span><span class="n">replace_unknown</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">state</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">state_path</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>  <span class="c1"># do not show the start/end state predictions</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Example-Decoding-Sequences-with-MFC-Tagger">Example Decoding Sequences with MFC Tagger<a class="anchor-link" href="#Example-Decoding-Sequences-with-MFC-Tagger">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="o">.</span><span class="n">keys</span><span class="p">[:</span><span class="mi">3</span><span class="p">]:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sentence Key: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Predicted labels:</span><span class="se">\n</span><span class="s2">-----------------&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">simplify_decoding</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sentences</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">words</span><span class="p">,</span> <span class="n">mfc_model</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Actual labels:</span><span class="se">\n</span><span class="s2">--------------&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sentences</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Sentence Key: b100-28144
-
-Predicted labels:
------------------
-[&#39;CONJ&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;.&#39;, &#39;NOUN&#39;, &#39;.&#39;, &#39;.&#39;]
-
-Actual labels:
---------------
-(&#39;CONJ&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;.&#39;, &#39;NOUN&#39;, &#39;.&#39;, &#39;.&#39;)
-
-
-Sentence Key: b100-23146
-
-Predicted labels:
------------------
-[&#39;PRON&#39;, &#39;VERB&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;.&#39;, &#39;ADP&#39;, &#39;VERB&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;.&#39;]
-
-Actual labels:
---------------
-(&#39;PRON&#39;, &#39;VERB&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;.&#39;, &#39;ADP&#39;, &#39;VERB&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;.&#39;)
-
-
-Sentence Key: b100-35462
-
-Predicted labels:
------------------
-[&#39;DET&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;ADJ&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;.&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;&lt;MISSING&gt;&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;ADJ&#39;, &#39;.&#39;, &#39;ADJ&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;ADV&#39;, &#39;NOUN&#39;, &#39;.&#39;]
-
-Actual labels:
---------------
-(&#39;DET&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;ADJ&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;.&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;ADJ&#39;, &#39;.&#39;, &#39;ADJ&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;.&#39;)
-
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Evaluating-Model-Accuracy">Evaluating Model Accuracy<a class="anchor-link" href="#Evaluating-Model-Accuracy">&#182;</a></h3><p>The function below will evaluate the accuracy of the MFC tagger on the collection of all sentences from a text corpus.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Calculate the prediction accuracy by using the model to decode each sequence</span>
-<span class="sd">    in the input X and comparing the prediction with the true labels in Y.</span>
-<span class="sd">    </span>
-<span class="sd">    The X should be an array whose first dimension is the number of sentences to test,</span>
-<span class="sd">    and each element of the array should be an iterable of the words in the sequence.</span>
-<span class="sd">    The arrays X and Y should have the exact same shape.</span>
-<span class="sd">    </span>
-<span class="sd">    X = [(&quot;See&quot;, &quot;Spot&quot;, &quot;run&quot;), (&quot;Run&quot;, &quot;Spot&quot;, &quot;run&quot;, &quot;fast&quot;), ...]</span>
-<span class="sd">    Y = [(), (), ...]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">correct</span> <span class="o">=</span> <span class="n">total_predictions</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">observations</span><span class="p">,</span> <span class="n">actual_tags</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">):</span>
-        
-        <span class="c1"># The model.viterbi call in simplify_decoding will return None if the HMM</span>
-        <span class="c1"># raises an error (for example, if a test sentence contains a word that</span>
-        <span class="c1"># is out of vocabulary for the training set). Any exception counts the</span>
-        <span class="c1"># full sentence as an error (which makes this a conservative estimate).</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">most_likely_tags</span> <span class="o">=</span> <span class="n">simplify_decoding</span><span class="p">(</span><span class="n">observations</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-            <span class="n">correct</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span> <span class="o">==</span> <span class="n">t</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">most_likely_tags</span><span class="p">,</span> <span class="n">actual_tags</span><span class="p">))</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="n">total_predictions</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">observations</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">correct</span> <span class="o">/</span> <span class="n">total_predictions</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Evaluate-the-accuracy-of-the-MFC-tagger">Evaluate the accuracy of the MFC tagger<a class="anchor-link" href="#Evaluate-the-accuracy-of-the-MFC-tagger">&#182;</a></h4><p>Run the next cell to evaluate the accuracy of the tagger on the training and test corpus.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mfc_training_acc</span> <span class="o">=</span> <span class="n">accuracy</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="n">mfc_model</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;training accuracy mfc_model: </span><span class="si">{:.2f}</span><span class="s2">%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">mfc_training_acc</span><span class="p">))</span>
-
-<span class="n">mfc_testing_acc</span> <span class="o">=</span> <span class="n">accuracy</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="n">mfc_model</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;testing accuracy mfc_model: </span><span class="si">{:.2f}</span><span class="s2">%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">mfc_testing_acc</span><span class="p">))</span>
-
-<span class="k">assert</span> <span class="n">mfc_training_acc</span> <span class="o">&gt;=</span> <span class="mf">0.955</span><span class="p">,</span> <span class="s2">&quot;Uh oh. Your MFC accuracy on the training set doesn&#39;t look right.&quot;</span>
-<span class="k">assert</span> <span class="n">mfc_testing_acc</span> <span class="o">&gt;=</span> <span class="mf">0.925</span><span class="p">,</span> <span class="s2">&quot;Uh oh. Your MFC accuracy on the testing set doesn&#39;t look right.&quot;</span>
-<span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;alert alert-block alert-success&quot;&gt;Your MFC tagger accuracy looks correct!&lt;/div&gt;&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>training accuracy mfc_model: 95.72%
-testing accuracy mfc_model: 93.01%
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[14]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div class="alert alert-block alert-success">Your MFC tagger accuracy looks correct!</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Step-3:-Build-an-HMM-tagger">Step 3: Build an HMM tagger<a class="anchor-link" href="#Step-3:-Build-an-HMM-tagger">&#182;</a></h2><hr>
-<p>The HMM tagger has one hidden state for each possible tag, and parameterized by two distributions: the emission probabilties giving the conditional probability of observing a given <strong>word</strong> from each hidden state, and the transition probabilities giving the conditional probability of moving between <strong>tags</strong> during the sequence.</p>
-<p>We will also estimate the starting probability distribution (the probability of each <strong>tag</strong> being the first tag in a sequence), and the terminal probability distribution (the probability of each <strong>tag</strong> being the last tag in a sequence).</p>
-<p>The maximum likelihood estimate of these distributions can be calculated from the frequency counts as described in the following sections where you'll implement functions to count the frequencies, and finally build the model. The HMM model will make predictions according to the formula:</p>
-$$t_i^n = \underset{t_i^n}{\mathrm{argmax}} \prod_{i=1}^n P(w_i|t_i) P(t_i|t_{i-1})$$<p>Refer to Speech &amp; Language Processing <a href="https://web.stanford.edu/~jurafsky/slp3/10.pdf">Chapter 10</a> for more information.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="IMPLEMENTATION:-Unigram-Counts">IMPLEMENTATION: Unigram Counts<a class="anchor-link" href="#IMPLEMENTATION:-Unigram-Counts">&#182;</a></h3><p>Complete the function below to estimate the co-occurrence frequency of each symbol over all of the input sequences. The unigram probabilities in our HMM model are estimated from the formula below, where N is the total number of samples in the input. (You only need to compute the counts for now.)</p>
-$$P(tag_1) = \frac{C(tag_1)}{N}$$
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">unigram_counts</span><span class="p">(</span><span class="n">sequences</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a dictionary keyed to each unique value in the input sequence list that</span>
-<span class="sd">    counts the number of occurrences of the value in the sequences list. The sequences</span>
-<span class="sd">    collection should be a 2-dimensional array.</span>
-<span class="sd">    </span>
-<span class="sd">    For example, if the tag NOUN appears 275558 times over all the input sequences,</span>
-<span class="sd">    then you should return a dictionary such that your_unigram_counts[NOUN] == 275558.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: Finish this function!</span>
-    <span class="c1"># raise NotImplementedError</span>
-    <span class="c1"># 每个tag出现的次数</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">sequences</span><span class="p">:</span>
-        <span class="n">ret</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="n">ret</span>
-
-<span class="c1"># TODO: call unigram_counts with a list of tag sequences from the training set</span>
-
-<span class="n">tag_unigrams</span> <span class="o">=</span> <span class="n">unigram_counts</span><span class="p">((</span><span class="n">tag</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">Y</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">sentence</span><span class="p">))</span>
-
-<span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">tag_unigrams</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">tagset</span><span class="p">,</span> \
-       <span class="s2">&quot;Uh oh. It looks like your tag counts doesn&#39;t include all the tags!&quot;</span>
-<span class="k">assert</span> <span class="nb">min</span><span class="p">(</span><span class="n">tag_unigrams</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">tag_unigrams</span><span class="o">.</span><span class="n">get</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> \
-       <span class="s2">&quot;Hmmm...&#39;X&#39; is expected to be the least common class&quot;</span>
-<span class="k">assert</span> <span class="nb">max</span><span class="p">(</span><span class="n">tag_unigrams</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">tag_unigrams</span><span class="o">.</span><span class="n">get</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;NOUN&#39;</span><span class="p">,</span> \
-       <span class="s2">&quot;Hmmm...&#39;NOUN&#39; is expected to be the most common class&quot;</span>
-<span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;alert alert-block alert-success&quot;&gt;Your tag unigrams look good!&lt;/div&gt;&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[15]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div class="alert alert-block alert-success">Your tag unigrams look good!</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="IMPLEMENTATION:-Bigram-Counts">IMPLEMENTATION: Bigram Counts<a class="anchor-link" href="#IMPLEMENTATION:-Bigram-Counts">&#182;</a></h3><p>Complete the function below to estimate the co-occurrence frequency of each pair of symbols in each of the input sequences. These counts are used in the HMM model to estimate the bigram probability of two tags from the frequency counts according to the formula: $$P(tag_2|tag_1) = \frac{C(tag_2|tag_1)}{C(tag_2)}$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">bigram_counts</span><span class="p">(</span><span class="n">sequences</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a dictionary keyed to each unique PAIR of values in the input sequences</span>
-<span class="sd">    list that counts the number of occurrences of pair in the sequences list. The input</span>
-<span class="sd">    should be a 2-dimensional array.</span>
-<span class="sd">    </span>
-<span class="sd">    For example, if the pair of tags (NOUN, VERB) appear 61582 times, then you should</span>
-<span class="sd">    return a dictionary such that your_bigram_counts[(NOUN, VERB)] == 61582</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># TODO: Finish this function!</span>
-    <span class="c1"># raise NotImplementedError</span>
-    <span class="c1"># 每个(tag1, tag2) 对出现的次数</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sequences</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">bigram</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span> <span class="n">sentence</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
-            <span class="n">ret</span><span class="p">[</span><span class="n">bigram</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
-    <span class="k">return</span> <span class="n">ret</span>
-
-<span class="c1"># TODO: call bigram_counts with a list of tag sequences from the training set</span>
-<span class="n">tag_bigrams</span> <span class="o">=</span> <span class="n">bigram_counts</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
-
-<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">tag_bigrams</span><span class="p">)</span> <span class="o">==</span> <span class="mi">144</span><span class="p">,</span> \
-       <span class="s2">&quot;Uh oh. There should be 144 pairs of bigrams (12 tags x 12 tags)&quot;</span>
-<span class="k">assert</span> <span class="nb">min</span><span class="p">(</span><span class="n">tag_bigrams</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">tag_bigrams</span><span class="o">.</span><span class="n">get</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;NUM&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;PRON&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">)],</span> \
-       <span class="s2">&quot;Hmmm...The least common bigram should be one of (&#39;X&#39;, &#39;NUM&#39;) or (&#39;PRON&#39;, &#39;X&#39;).&quot;</span>
-<span class="k">assert</span> <span class="nb">max</span><span class="p">(</span><span class="n">tag_bigrams</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">tag_bigrams</span><span class="o">.</span><span class="n">get</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;DET&#39;</span><span class="p">,</span> <span class="s1">&#39;NOUN&#39;</span><span class="p">)],</span> \
-       <span class="s2">&quot;Hmmm...(&#39;DET&#39;, &#39;NOUN&#39;) is expected to be the most common bigram.&quot;</span>
-<span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;alert alert-block alert-success&quot;&gt;Your tag bigrams look good!&lt;/div&gt;&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[16]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div class="alert alert-block alert-success">Your tag bigrams look good!</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="IMPLEMENTATION:-Sequence-Starting-Counts">IMPLEMENTATION: Sequence Starting Counts<a class="anchor-link" href="#IMPLEMENTATION:-Sequence-Starting-Counts">&#182;</a></h3><p>Complete the code below to estimate the bigram probabilities of a sequence starting with each tag.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">starting_counts</span><span class="p">(</span><span class="n">sequences</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a dictionary keyed to each unique value in the input sequences list</span>
-<span class="sd">    that counts the number of occurrences where that value is at the beginning of</span>
-<span class="sd">    a sequence.</span>
-<span class="sd">    </span>
-<span class="sd">    For example, if 8093 sequences start with NOUN, then you should return a</span>
-<span class="sd">    dictionary such that your_starting_counts[NOUN] == 8093</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: Finish this function!</span>
-    <span class="c1"># raise NotImplementedError</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sequences</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">sentence</span><span class="p">:</span>
-            <span class="n">ret</span><span class="p">[</span><span class="n">sentence</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span> 
-    <span class="k">return</span> <span class="n">ret</span>
-
-<span class="c1"># TODO: Calculate the count of each tag starting a sequence</span>
-<span class="n">tag_starts</span> <span class="o">=</span> <span class="n">starting_counts</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
-
-<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">tag_starts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">12</span><span class="p">,</span> <span class="s2">&quot;Uh oh. There should be 12 tags in your dictionary.&quot;</span>
-<span class="k">assert</span> <span class="nb">min</span><span class="p">(</span><span class="n">tag_starts</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">tag_starts</span><span class="o">.</span><span class="n">get</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s2">&quot;Hmmm...&#39;X&#39; is expected to be the least common starting bigram.&quot;</span>
-<span class="k">assert</span> <span class="nb">max</span><span class="p">(</span><span class="n">tag_starts</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">tag_starts</span><span class="o">.</span><span class="n">get</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;DET&#39;</span><span class="p">,</span> <span class="s2">&quot;Hmmm...&#39;DET&#39; is expected to be the most common starting bigram.&quot;</span>
-<span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;alert alert-block alert-success&quot;&gt;Your starting tag counts look good!&lt;/div&gt;&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[17]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div class="alert alert-block alert-success">Your starting tag counts look good!</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="IMPLEMENTATION:-Sequence-Ending-Counts">IMPLEMENTATION: Sequence Ending Counts<a class="anchor-link" href="#IMPLEMENTATION:-Sequence-Ending-Counts">&#182;</a></h3><p>Complete the function below to estimate the bigram probabilities of a sequence ending with each tag.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">ending_counts</span><span class="p">(</span><span class="n">sequences</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a dictionary keyed to each unique value in the input sequences list</span>
-<span class="sd">    that counts the number of occurrences where that value is at the end of</span>
-<span class="sd">    a sequence.</span>
-<span class="sd">    </span>
-<span class="sd">    For example, if 18 sequences end with DET, then you should return a</span>
-<span class="sd">    dictionary such that your_starting_counts[DET] == 18</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: Finish this function!</span>
-    <span class="c1"># raise NotImplementedError</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sequences</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">sentence</span><span class="p">:</span>
-            <span class="n">ret</span><span class="p">[</span><span class="n">sentence</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span> 
-    <span class="k">return</span> <span class="n">ret</span>
-
-<span class="c1"># TODO: Calculate the count of each tag ending a sequence</span>
-<span class="n">tag_ends</span> <span class="o">=</span> <span class="n">ending_counts</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
-
-<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">tag_ends</span><span class="p">)</span> <span class="o">==</span> <span class="mi">12</span><span class="p">,</span> <span class="s2">&quot;Uh oh. There should be 12 tags in your dictionary.&quot;</span>
-<span class="k">assert</span> <span class="nb">min</span><span class="p">(</span><span class="n">tag_ends</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">tag_ends</span><span class="o">.</span><span class="n">get</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;CONJ&#39;</span><span class="p">],</span> <span class="s2">&quot;Hmmm...&#39;X&#39; or &#39;CONJ&#39; should be the least common ending bigram.&quot;</span>
-<span class="k">assert</span> <span class="nb">max</span><span class="p">(</span><span class="n">tag_ends</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">tag_ends</span><span class="o">.</span><span class="n">get</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s2">&quot;Hmmm...&#39;.&#39; is expected to be the most common ending bigram.&quot;</span>
-<span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;alert alert-block alert-success&quot;&gt;Your ending tag counts look good!&lt;/div&gt;&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[18]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div class="alert alert-block alert-success">Your ending tag counts look good!</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="IMPLEMENTATION:-Basic-HMM-Tagger">IMPLEMENTATION: Basic HMM Tagger<a class="anchor-link" href="#IMPLEMENTATION:-Basic-HMM-Tagger">&#182;</a></h3><p>Use the tag unigrams and bigrams calculated above to construct a hidden Markov tagger.</p>
-<ul>
-<li>Add one state per tag<ul>
-<li>The emission distribution at each state should be estimated with the formula: $P(w|t) = \frac{C(t, w)}{C(t)}$</li>
-</ul>
-</li>
-<li>Add an edge from the starting state <code>basic_model.start</code> to each tag<ul>
-<li>The transition probability should be estimated with the formula: $P(t|start) = \frac{C(start, t)}{C(start)}$</li>
-</ul>
-</li>
-<li>Add an edge from each tag to the end state <code>basic_model.end</code><ul>
-<li>The transition probability should be estimated with the formula: $P(end|t) = \frac{C(t, end)}{C(t)}$</li>
-</ul>
-</li>
-<li>Add an edge between <em>every</em> pair of tags<ul>
-<li>The transition probability should be estimated with the formula: $P(t_2|t_1) = \frac{C(t_1, t_2)}{C(t_1)}$</li>
-</ul>
-</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">Construct Hidden Markov Model Examples:</span>
-
-<span class="sd">&gt;&gt;&gt; from pomegranate import *</span>
-<span class="sd">&gt;&gt;&gt; d1 = DiscreteDistribution({&#39;A&#39; : 0.35, &#39;C&#39; : 0.20, &#39;G&#39; : 0.05, &#39;T&#39; : 0.40})</span>
-<span class="sd">&gt;&gt;&gt; d2 = DiscreteDistribution({&#39;A&#39; : 0.25, &#39;C&#39; : 0.25, &#39;G&#39; : 0.25, &#39;T&#39; : 0.25})</span>
-<span class="sd">&gt;&gt;&gt; d3 = DiscreteDistribution({&#39;A&#39; : 0.10, &#39;C&#39; : 0.40, &#39;G&#39; : 0.40, &#39;T&#39; : 0.10})</span>
-<span class="sd">&gt;&gt;&gt;</span>
-<span class="sd">&gt;&gt;&gt; s1 = State(d1, name=&quot;s1&quot;)</span>
-<span class="sd">&gt;&gt;&gt; s2 = State(d2, name=&quot;s2&quot;)</span>
-<span class="sd">&gt;&gt;&gt; s3 = State(d3, name=&quot;s3&quot;)</span>
-<span class="sd">&gt;&gt;&gt;</span>
-<span class="sd">&gt;&gt;&gt; model = HiddenMarkovModel(&#39;example&#39;)</span>
-<span class="sd">&gt;&gt;&gt; model.add_states([s1, s2, s3])</span>
-<span class="sd">&gt;&gt;&gt; model.add_transition(model.start, s1, 0.90)</span>
-<span class="sd">&gt;&gt;&gt; model.add_transition(model.start, s2, 0.10)</span>
-<span class="sd">&gt;&gt;&gt; model.add_transition(s1, s1, 0.80)</span>
-<span class="sd">&gt;&gt;&gt; model.add_transition(s1, s2, 0.20)</span>
-<span class="sd">&gt;&gt;&gt; model.add_transition(s2, s2, 0.90)</span>
-<span class="sd">&gt;&gt;&gt; model.add_transition(s2, s3, 0.10)</span>
-<span class="sd">&gt;&gt;&gt; model.add_transition(s3, s3, 0.70)</span>
-<span class="sd">&gt;&gt;&gt; model.add_transition(s3, model.end, 0.30)</span>
-<span class="sd">&gt;&gt;&gt; model.bake()</span>
-<span class="sd">&gt;&gt;&gt;</span>
-<span class="sd">&gt;&gt;&gt; print(model.log_probability(list(&#39;ACGACTATTCGAT&#39;)))</span>
-<span class="sd">-22.73896159971087</span>
-<span class="sd">&gt;&gt;&gt; print(&quot;, &quot;.join(state.name for i, state in model.viterbi(list(&#39;ACGACTATTCGAT&#39;))[1]))</span>
-<span class="sd">example-start, s1, s2, s2, s2, s2, s2, s2, s2, s2, s2, s2, s2, s3, example-end&#39;&#39;&#39;</span>
-
-<span class="n">basic_model</span> <span class="o">=</span> <span class="n">HiddenMarkovModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;base-hmm-tagger&quot;</span><span class="p">)</span>
-<span class="c1"># TODO: create states with emission probability distributions P(word | tag) and add to the model</span>
-<span class="c1"># (Hint: you may need to loop &amp; create/add new states)</span>
-<span class="n">stats_map</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">tagset</span><span class="p">:</span>
-    <span class="n">emission_probability</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
-    <span class="n">C_t</span> <span class="o">=</span> <span class="n">tag_unigrams</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">emission_counts</span><span class="p">[</span><span class="n">tag</span><span class="p">]:</span>
-        <span class="n">C_t_w</span> <span class="o">=</span> <span class="n">emission_counts</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">word</span><span class="p">]</span>
-        <span class="n">P_t_w</span> <span class="o">=</span> <span class="n">C_t_w</span> <span class="o">/</span> <span class="n">C_t</span>
-        <span class="n">emission_probability</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">P_t_w</span>
-    <span class="c1"># d1 = DiscreteDistribution({&#39;A&#39; : 0.35, &#39;C&#39; : 0.20, &#39;G&#39; : 0.05, &#39;T&#39; : 0.40})</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">DiscreteDistribution</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">emission_probability</span><span class="p">))</span>
-    <span class="n">stats_map</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">State</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span>
-<span class="n">basic_model</span><span class="o">.</span><span class="n">add_states</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">stats_map</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-
-<span class="c1"># TODO: add edges between states for the observed transition frequencies P(tag_i | tag_i-1)</span>
-<span class="c1"># (Hint: you may need to loop &amp; add transitions</span>
-<span class="k">for</span> <span class="n">tag</span><span class="p">,</span> <span class="n">C_start_t</span> <span class="ow">in</span> <span class="n">tag_starts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">C_t</span> <span class="o">=</span> <span class="n">tag_unigrams</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
-    <span class="n">basic_model</span><span class="o">.</span><span class="n">add_transition</span><span class="p">(</span><span class="n">basic_model</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">stats_map</span><span class="p">[</span><span class="n">tag</span><span class="p">],</span> <span class="n">C_start_t</span> <span class="o">/</span> <span class="n">C_t</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">tag</span><span class="p">,</span> <span class="n">C_end_t</span> <span class="ow">in</span> <span class="n">tag_ends</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">C_t</span> <span class="o">=</span> <span class="n">tag_unigrams</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
-    <span class="n">basic_model</span><span class="o">.</span><span class="n">add_transition</span><span class="p">(</span><span class="n">stats_map</span><span class="p">[</span><span class="n">tag</span><span class="p">],</span> <span class="n">basic_model</span><span class="o">.</span><span class="n">end</span> <span class="p">,</span> <span class="n">C_end_t</span> <span class="o">/</span> <span class="n">C_t</span><span class="p">)</span>
-    
-<span class="k">for</span> <span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">),</span> <span class="n">C_t1_t2</span> <span class="ow">in</span> <span class="n">tag_bigrams</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">C_t1</span> <span class="o">=</span> <span class="n">tag_unigrams</span><span class="p">[</span><span class="n">t1</span><span class="p">]</span>
-    <span class="n">basic_model</span><span class="o">.</span><span class="n">add_transition</span><span class="p">(</span><span class="n">stats_map</span><span class="p">[</span><span class="n">t1</span><span class="p">],</span> <span class="n">stats_map</span><span class="p">[</span><span class="n">t2</span><span class="p">]</span> <span class="p">,</span> <span class="n">C_t1_t2</span> <span class="o">/</span> <span class="n">C_t1</span><span class="p">)</span>
-
-
-<span class="c1"># NOTE: YOU SHOULD NOT NEED TO MODIFY ANYTHING BELOW THIS LINE</span>
-<span class="c1"># finalize the model</span>
-<span class="n">basic_model</span><span class="o">.</span><span class="n">bake</span><span class="p">()</span>
-
-<span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">tag</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">basic_model</span><span class="o">.</span><span class="n">states</span><span class="p">)</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">tagset</span><span class="p">),</span> \
-       <span class="s2">&quot;Every state in your network should use the name of the associated tag, which must be one of the training set tags.&quot;</span>
-<span class="k">assert</span> <span class="n">basic_model</span><span class="o">.</span><span class="n">edge_count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">168</span><span class="p">,</span> \
-       <span class="p">(</span><span class="s2">&quot;Your network should have an edge from the start node to each state, one edge between every &quot;</span> <span class="o">+</span>
-        <span class="s2">&quot;pair of tags (states), and an edge from each state to the end node.&quot;</span><span class="p">)</span>
-<span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;alert alert-block alert-success&quot;&gt;Your HMM network topology looks good!&lt;/div&gt;&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[19]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div class="alert alert-block alert-success">Your HMM network topology looks good!</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hmm_training_acc</span> <span class="o">=</span> <span class="n">accuracy</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">training_set</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="n">basic_model</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;training accuracy basic hmm model: </span><span class="si">{:.2f}</span><span class="s2">%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">hmm_training_acc</span><span class="p">))</span>
-
-<span class="n">hmm_testing_acc</span> <span class="o">=</span> <span class="n">accuracy</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="n">basic_model</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;testing accuracy basic hmm model: </span><span class="si">{:.2f}</span><span class="s2">%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">hmm_testing_acc</span><span class="p">))</span>
-
-<span class="k">assert</span> <span class="n">hmm_training_acc</span> <span class="o">&gt;</span> <span class="mf">0.97</span><span class="p">,</span> <span class="s2">&quot;Uh oh. Your HMM accuracy on the training set doesn&#39;t look right.&quot;</span>
-<span class="k">assert</span> <span class="n">hmm_testing_acc</span> <span class="o">&gt;</span> <span class="mf">0.955</span><span class="p">,</span> <span class="s2">&quot;Uh oh. Your HMM accuracy on the testing set doesn&#39;t look right.&quot;</span>
-<span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;alert alert-block alert-success&quot;&gt;Your HMM tagger accuracy looks correct! Congratulations, you</span><span class="se">\&#39;</span><span class="s1">ve finished the project.&lt;/div&gt;&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>training accuracy basic hmm model: 97.49%
-testing accuracy basic hmm model: 95.87%
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[20]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div class="alert alert-block alert-success">Your HMM tagger accuracy looks correct! Congratulations, you've finished the project.</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Example-Decoding-Sequences-with-the-HMM-Tagger">Example Decoding Sequences with the HMM Tagger<a class="anchor-link" href="#Example-Decoding-Sequences-with-the-HMM-Tagger">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">testing_set</span><span class="o">.</span><span class="n">keys</span><span class="p">[:</span><span class="mi">3</span><span class="p">]:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sentence Key: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Predicted labels:</span><span class="se">\n</span><span class="s2">-----------------&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">simplify_decoding</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sentences</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">words</span><span class="p">,</span> <span class="n">basic_model</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Actual labels:</span><span class="se">\n</span><span class="s2">--------------&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sentences</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Sentence Key: b100-28144
-
-Predicted labels:
------------------
-[&#39;CONJ&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;.&#39;, &#39;NOUN&#39;, &#39;.&#39;, &#39;.&#39;]
-
-Actual labels:
---------------
-(&#39;CONJ&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;NOUN&#39;, &#39;NUM&#39;, &#39;.&#39;, &#39;.&#39;, &#39;NOUN&#39;, &#39;.&#39;, &#39;.&#39;)
-
-
-Sentence Key: b100-23146
-
-Predicted labels:
------------------
-[&#39;PRON&#39;, &#39;VERB&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;.&#39;, &#39;ADP&#39;, &#39;VERB&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;.&#39;]
-
-Actual labels:
---------------
-(&#39;PRON&#39;, &#39;VERB&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;.&#39;, &#39;ADP&#39;, &#39;VERB&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;.&#39;)
-
-
-Sentence Key: b100-35462
-
-Predicted labels:
------------------
-[&#39;DET&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;ADJ&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;.&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;ADJ&#39;, &#39;.&#39;, &#39;ADJ&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;.&#39;]
-
-Actual labels:
---------------
-(&#39;DET&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;VERB&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;ADJ&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;.&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;ADP&#39;, &#39;DET&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;ADJ&#39;, &#39;.&#39;, &#39;ADJ&#39;, &#39;.&#39;, &#39;CONJ&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;ADP&#39;, &#39;ADJ&#39;, &#39;NOUN&#39;, &#39;.&#39;)
-
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Finishing-the-project">Finishing the project<a class="anchor-link" href="#Finishing-the-project">&#182;</a></h2><hr>
-<div class="alert alert-block alert-info">
-**Note:** **SAVE YOUR NOTEBOOK**, then run the next cell to generate an HTML copy. You will zip & submit both this file and the HTML copy for review.
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!!</span>jupyter nbconvert *.ipynb
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[22]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;[NbConvertApp] Converting notebook HMM Tagger.ipynb to html&#39;,
- &#39;[NbConvertApp] Writing 389974 bytes to HMM Tagger.html&#39;,
- &#39;[NbConvertApp] Converting notebook HMM Tagger-zh.ipynb to html&#39;,
- &#39;[NbConvertApp] Writing 384938 bytes to HMM Tagger-zh.html&#39;,
- &#39;[NbConvertApp] Converting notebook HMM warmup (optional).ipynb to html&#39;,
- &#39;[NbConvertApp] Writing 326463 bytes to HMM warmup (optional).html&#39;,
- &#39;[NbConvertApp] Converting notebook HMM warmup (optional)-zh.ipynb to html&#39;,
- &#39;[NbConvertApp] Writing 321126 bytes to HMM warmup (optional)-zh.html&#39;]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Step-4:-[Optional]-Improving-model-performance">Step 4: [Optional] Improving model performance<a class="anchor-link" href="#Step-4:-[Optional]-Improving-model-performance">&#182;</a></h2><hr>
-<p>There are additional enhancements that can be incorporated into your tagger that improve performance on larger tagsets where the data sparsity problem is more significant. The data sparsity problem arises because the same amount of data split over more tags means there will be fewer samples in each tag, and there will be more missing data  tags that have zero occurrences in the data. The techniques in this section are optional.</p>
-<ul>
-<li><p><a href="https://en.wikipedia.org/wiki/Additive_smoothing">Laplace Smoothing</a> (pseudocounts)
-  Laplace smoothing is a technique where you add a small, non-zero value to all observed counts to offset for unobserved values.</p>
-</li>
-<li><p>Backoff Smoothing
-  Another smoothing technique is to interpolate between n-grams for missing data. This method is more effective than Laplace smoothing at combatting the data sparsity problem. Refer to chapters 4, 9, and 10 of the <a href="https://web.stanford.edu/~jurafsky/slp3/">Speech &amp; Language Processing</a> book for more information.</p>
-</li>
-<li><p>Extending to Trigrams
-  HMM taggers have achieved better than 96% accuracy on this dataset with the full Penn treebank tagset using an architecture described in <a href="http://www.coli.uni-saarland.de/~thorsten/publications/Brants-ANLP00.pdf">this</a> paper. Altering your HMM to achieve the same performance would require implementing deleted interpolation (described in the paper), incorporating trigram probabilities in your frequency tables, and re-implementing the Viterbi algorithm to consider three consecutive states instead of two.</p>
-</li>
-</ul>
-<h3 id="Obtain-the-Brown-Corpus-with-a-Larger-Tagset">Obtain the Brown Corpus with a Larger Tagset<a class="anchor-link" href="#Obtain-the-Brown-Corpus-with-a-Larger-Tagset">&#182;</a></h3><p>Run the code below to download a copy of the brown corpus with the full NLTK tagset. You will need to research the available tagset information in the NLTK docs and determine the best way to extract the subset of NLTK tags you want to explore. If you write the following the format specified in Step 1, then you can reload the data using all of the code above for comparison.</p>
-<p>Refer to <a href="http://www.nltk.org/book/ch05.html">Chapter 5</a> of the NLTK book for more information on the available tagsets.</p>
+<h2 id="&#26500;&#24314;&#31616;&#21333;&#30340;-HMM">&#26500;&#24314;&#31616;&#21333;&#30340; HMM<a class="anchor-link" href="#&#26500;&#24314;&#31616;&#21333;&#30340;-HMM">&#182;</a></h2><hr>
+<p>你首先将根据教科书<a href="http://aima.cs.berkeley.edu/">人工智能：现代方法</a>中的示例构建一个简单的 HMM 网络。</p>
+<blockquote><p>你是秘密地下设施的保安。每天，你都要猜测今天下雨了吗，但是你接触外面世界的唯一方式是每天早上看到总监是否拿着一把伞。</p>
+</blockquote>
+<p>下图显示了所需网络拓扑的简化图表。</p>
+<p><img src="_example.png" alt=""></p>
+<h3 id="&#25551;&#36848;&#32593;&#32476;">&#25551;&#36848;&#32593;&#32476;<a class="anchor-link" href="#&#25551;&#36848;&#32593;&#32476;">&#182;</a></h3><div class="alert alert-block alert-warning">
+$\lambda = (A, B)$ 指定了隐马尔可夫模型，发射概率分布是 $A$，状态转移概率分布是 $B$。
+</div><p>HMM 网络的参数是两个分布：发射概率 - 给出观察每个隐藏状态的证据值的条件概率，以及转移概率 - 给出在序列期间在状态之间移动的条件概率。此外，你可以指定初始分布，用于描述序列从每个状态开始的概率。</p>
+<div class="alert alert-block alert-warning">
+在每个时间 $t$, $X_t$ 表示隐藏状态，$Y_t$ 表示该时间的观察结果。
+</div><p>在此问题中，$t$ 对应的是一周的每一天，隐藏状态表示外面的天气（雨天还是晴天），观察结果记录的是保安是否看到总监拿着伞。</p>
+<p>例如，在某一周，保安观察到拿伞的情况是周一到周五 ['是', '否', '是', '否', '是']，外面的天气是 ['雨天', '晴天', '晴天', '晴天', '雨天']。在这种情况下，$t=周三$，$Y_{周三}=是$ 以及 $X_{周三}=晴天$。（你可能觉得奇怪的是，在晴天也看到拿着伞，但是在此模型中是可能发生的。）</p>
+<h3 id="&#20351;&#29992;-Pomegranate-&#21021;&#22987;&#21270;-HMM-&#32593;&#32476;">&#20351;&#29992; Pomegranate &#21021;&#22987;&#21270; HMM &#32593;&#32476;<a class="anchor-link" href="#&#20351;&#29992;-Pomegranate-&#21021;&#22987;&#21270;-HMM-&#32593;&#32476;">&#182;</a></h3><p>Pomegranate 库支持<a href="http://pomegranate.readthedocs.io/en/latest/HiddenMarkovModel.html#initialization">两个初始化方法</a>。你可以明确提供三个分布，或者逐行构建网络。对于示例网络，我们将使用逐行方法，但是你可以使用任何一种方法构建词性标签器。</p>
 
 </div>
 </div>
@@ -14500,19 +13192,433 @@ Actual labels:
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">nltk</span>
-<span class="kn">from</span> <span class="nn">nltk</span> <span class="k">import</span> <span class="n">pos_tag</span><span class="p">,</span> <span class="n">word_tokenize</span>
-<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="k">import</span> <span class="n">brown</span>
-
-<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;brown&#39;</span><span class="p">)</span>
-<span class="n">training_corpus</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">corpus</span><span class="o">.</span><span class="n">brown</span>
-<span class="n">training_corpus</span><span class="o">.</span><span class="n">tagged_sents</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># create the HMM model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">HiddenMarkovModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Example Model&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#23454;&#29616;&#65306;&#28155;&#21152;&#38544;&#34255;&#29366;&#24577;"><strong>&#23454;&#29616;</strong>&#65306;&#28155;&#21152;&#38544;&#34255;&#29366;&#24577;<a class="anchor-link" href="#&#23454;&#29616;&#65306;&#28155;&#21152;&#38544;&#34255;&#29366;&#24577;">&#182;</a></h3><p>逐行指定 HMM 模型时，对象一开始是空的容器。第一步是命名每个状态，并附上发射分布。</p>
+<h4 id="&#35266;&#23519;&#37327;&#21457;&#23556;&#27010;&#29575;&#65306;$P(Y_t-|-X_t)$">&#35266;&#23519;&#37327;&#21457;&#23556;&#27010;&#29575;&#65306;$P(Y_t | X_t)$<a class="anchor-link" href="#&#35266;&#23519;&#37327;&#21457;&#23556;&#27010;&#29575;&#65306;$P(Y_t-|-X_t)$">&#182;</a></h4><p>我们必须假设对于总监的行为，我们知道一些先验信息（可能来自于某个数据集），以便得出每个隐藏状态的发射概率。在实际问题中，你通常可以根据经验估计发射概率，对于词性标签器来说我们将这么做。我们的假想数据将生成下表中的条件概率。（注意行值的和是 1.0）</p>
+<table>
+<thead><tr>
+<th></th>
+<th>$是$</th>
+<th>$否$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$晴天$</td>
+<td>0.10</td>
+<td>0.90</td>
+</tr>
+<tr>
+<td>$雨天$</td>
+<td>0.80</td>
+<td>0.20</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># create the HMM model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">HiddenMarkovModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Example Model&quot;</span><span class="p">)</span>
+
+<span class="c1"># emission probability distributions, P(umbrella | weather)</span>
+<span class="n">sunny_emissions</span> <span class="o">=</span> <span class="n">DiscreteDistribution</span><span class="p">({</span><span class="s2">&quot;yes&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">})</span>
+<span class="n">sunny_state</span> <span class="o">=</span> <span class="n">State</span><span class="p">(</span><span class="n">sunny_emissions</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sunny&quot;</span><span class="p">)</span>
+
+<span class="c1"># TODO: create a discrete distribution for the rainy emissions from the probability table</span>
+<span class="c1"># above &amp; use that distribution to create a state named Rainy</span>
+<span class="n">rainy_emissions</span> <span class="o">=</span> <span class="n">DiscreteDistribution</span><span class="p">({</span><span class="s2">&quot;yes&quot;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">})</span>
+<span class="n">rainy_state</span> <span class="o">=</span> <span class="n">State</span><span class="p">(</span><span class="n">rainy_emissions</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Rainy&quot;</span><span class="p">)</span>
+
+<span class="c1"># add the states to the model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_states</span><span class="p">(</span><span class="n">sunny_state</span><span class="p">,</span> <span class="n">rainy_state</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">rainy_emissions</span><span class="o">.</span><span class="n">probability</span><span class="p">(</span><span class="s2">&quot;yes&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s2">&quot;The director brings his umbrella with probability 0.8 on rainy days&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Looks good so far!&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Looks</span> <span class="n">good</span> <span class="n">so</span> <span class="n">far</span><span class="err">!</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#23454;&#29616;&#65306;&#28155;&#21152;&#36716;&#31227;"><strong>&#23454;&#29616;&#65306;</strong>&#28155;&#21152;&#36716;&#31227;<a class="anchor-link" href="#&#23454;&#29616;&#65306;&#28155;&#21152;&#36716;&#31227;">&#182;</a></h3><p>将状态添加到模型中后，我们可以构建单个状态转移的期望拓扑图。</p>
+<h4 id="&#21021;&#22987;&#27010;&#29575;-$P(X_0)$&#65306;">&#21021;&#22987;&#27010;&#29575; $P(X_0)$&#65306;<a class="anchor-link" href="#&#21021;&#22987;&#27010;&#29575;-$P(X_0)$&#65306;">&#182;</a></h4><p>我们假设不知道关于序列以每个状态开始的似然率方面的实用信息。如果序列每周从周一开始并在周五结束（因此每周是个新的序列），那么这个假设表明周一天气是雨天或晴天的概率是一样的。我们可以设置 $P(X_0=雨天) = 0.5$ 和 $P(X_0=晴天)=0.5$，为每个起始状态分配相等的概率：</p>
+<table>
+<thead><tr>
+<th>$晴天$</th>
+<th>$雨天$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.5</td>
+<td>0.5</td>
+</tr>
+</tbody>
+</table>
+<h4 id="&#29366;&#24577;&#36716;&#31227;&#27010;&#29575;-$P(X_{t}-|-X_{t-1})$">&#29366;&#24577;&#36716;&#31227;&#27010;&#29575; $P(X_{t} | X_{t-1})$<a class="anchor-link" href="#&#29366;&#24577;&#36716;&#31227;&#27010;&#29575;-$P(X_{t}-|-X_{t-1})$">&#182;</a></h4><p>最后，我们将假设对此示例来说，我们可以根据该区域的历史天气数据估计转移概率。在实际问题中，你通常可以使用问题结构（例如语言语法）对转移概率设定限制，然后通过用来估算发射概率的相同训练数据重新估算参数。在此假设下，我们得出下表中的条件概率。（注意行值的和是 1.0）</p>
+<table>
+<thead><tr>
+<th></th>
+<th>$晴天$</th>
+<th>$雨天$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$晴天$</td>
+<td>0.80</td>
+<td>0.20</td>
+</tr>
+<tr>
+<td>$雨天$</td>
+<td>0.40</td>
+<td>0.60</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># create edges for each possible state transition in the model</span>
+<span class="c1"># equal probability of a sequence starting on either a rainy or sunny day</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_transition</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">sunny_state</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_transition</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">rainy_state</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># add sunny day transitions (we already know estimates of these probabilities</span>
+<span class="c1"># from the problem statement)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_transition</span><span class="p">(</span><span class="n">sunny_state</span><span class="p">,</span> <span class="n">sunny_state</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>  <span class="c1"># 80% sunny-&gt;sunny</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_transition</span><span class="p">(</span><span class="n">sunny_state</span><span class="p">,</span> <span class="n">rainy_state</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>  <span class="c1"># 20% sunny-&gt;rainy</span>
+
+<span class="c1"># TODO: add rainy day transitions using the probabilities specified in the transition table</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_transition</span><span class="p">(</span><span class="n">rainy_state</span><span class="p">,</span> <span class="n">sunny_state</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>  <span class="c1"># 40% rainy-&gt;sunny</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_transition</span><span class="p">(</span><span class="n">rainy_state</span><span class="p">,</span> <span class="n">rainy_state</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>  <span class="c1"># 60% rainy-&gt;rainy</span>
+
+<span class="c1"># finally, call the .bake() method to finalize the model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">bake</span><span class="p">()</span>
+
+<span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">edge_count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;There should be two edges from model.start, two from Rainy, and two from Sunny&quot;</span>
+<span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">node_count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;The states should include model.start, model.end, Rainy, and Sunny&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Great! You&#39;ve finished the model.&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Great</span><span class="o">!</span> You<span class="err">&#39;</span>ve finished the model.
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="&#21487;&#35270;&#21270;&#32593;&#32476;">&#21487;&#35270;&#21270;&#32593;&#32476;<a class="anchor-link" href="#&#21487;&#35270;&#21270;&#32593;&#32476;">&#182;</a></h2><hr>
+<p>我们提供了一个叫做 <code>show_model()</code> 的辅助函数，它会根据 Pomegranate HMM 网络生成 PNG 图像。你可以指定可选文件名以将该文件保存到磁盘上。将“show_ends”参数设为 True 将添加包含在每个 Pomegranate 网络中的模型起始和结束状态。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;example.png&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_ends</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="output_11_0.png" alt="png"></p>
+<h3 id="&#26816;&#26597;&#27169;&#22411;">&#26816;&#26597;&#27169;&#22411;<a class="anchor-link" href="#&#26816;&#26597;&#27169;&#22411;">&#182;</a></h3><p>可以通过对 <code>HMM.states</code> 属性使用数组语法访问模型状态，并通过调用 <code>HMM.dense_transition_matrix()</code> 访问转移矩阵。元素 $(i, j)$ 存储的是从状态 $i$ 转移到状态 $j$ 的概率。例如，指定默认的列顺序后，元素 $(2, 1)$ 给出了从“雨天”转移到“晴天”的概率，我们指定为 0.4。</p>
+<p>请运行下面的单元格，检查完整的状态转移矩阵，然后阅读。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">column_order</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Example Model-start&quot;</span><span class="p">,</span> <span class="s2">&quot;Sunny&quot;</span><span class="p">,</span> <span class="s2">&quot;Rainy&quot;</span><span class="p">,</span> <span class="s2">&quot;Example Model-end&quot;</span><span class="p">]</span>  <span class="c1"># Override the Pomegranate default order</span>
+<span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">states</span><span class="p">]</span>
+<span class="n">order_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">column_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">column_order</span><span class="p">]</span>
+
+<span class="c1"># re-order the rows/columns to match the specified column order</span>
+<span class="n">transitions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">dense_transition_matrix</span><span class="p">()[:,</span> <span class="n">order_index</span><span class="p">][</span><span class="n">order_index</span><span class="p">,</span> <span class="p">:]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The state transition matrix, P(Xt|Xt-1):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">transitions</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The transition probability from Rainy to Sunny is </span><span class="si">{:.0f}</span><span class="s2">%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">transitions</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">The</span> <span class="n">state</span> <span class="n">transition</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">P</span><span class="p">(</span><span class="n">Xt</span><span class="o">|</span><span class="n">Xt</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+
+<span class="p">[[</span><span class="mf">0.</span>  <span class="mf">0.5</span> <span class="mf">0.5</span> <span class="mf">0.</span> <span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span>  <span class="mf">0.8</span> <span class="mf">0.2</span> <span class="mf">0.</span> <span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span>  <span class="mf">0.4</span> <span class="mf">0.6</span> <span class="mf">0.</span> <span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span> <span class="p">]]</span>
+
+<span class="n">The</span> <span class="n">transition</span> <span class="n">probability</span> <span class="kn">from</span> <span class="nn">Rainy</span> <span class="n">to</span> <span class="n">Sunny</span> <span class="ow">is</span> <span class="mi">40</span><span class="o">%</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="&#38544;&#39532;&#23572;&#21487;&#22827;&#27169;&#22411;&#20013;&#30340;&#25512;&#29702;">&#38544;&#39532;&#23572;&#21487;&#22827;&#27169;&#22411;&#20013;&#30340;&#25512;&#29702;<a class="anchor-link" href="#&#38544;&#39532;&#23572;&#21487;&#22827;&#27169;&#22411;&#20013;&#30340;&#25512;&#29702;">&#182;</a></h2><hr>
+<p>在继续之前，我们将通过这个简单的网络快速讲解下如何使用 Pomegranate API 执行最常见的 HMM 任务：</p>
+<div class="alert alert-block alert-info">
+**似然率评估**<br>
+给定模型 $\lambda=(A,B)$ 和一组观察结果 $Y$，计算从模型中观察到该序列的概率 $P(Y|\lambda)$
+</div><p>我们可以使用天气预测模型评估序列[是, 是, 是, 是, 是] （或任何其他状态序列）的似然率。机器翻译等问题通常会使用似然率和统计学语言模型来解释权重。</p>
+<div class="alert alert-block alert-info">
+**隐藏状态解码**<br>
+给定模型 $\lambda=(A,B)$ 和一组观察结果 $Y$，确定 $Q$，即模型中生成观察值的概率最高隐藏状态序列
+</div><p>我们可以使用天气预测模型判断已知观察序列的雨天/晴天状态概率最高的序列，例如[是, 否] -&gt; [雨天, 晴天]。我们将在词性标签器中使用解码判断序列的每个单词的标签。编码可以继续拆分为以下部分：“平滑”，计算过去的状态；“过滤”，计算当前状态；“预测”，计算未来状态。</p>
+<div class="alert alert-block alert-info">
+**参数学习**<br>
+给定模型拓扑图（状态和连接集合）和一组观察结果 $Y$，学习模型的转移概率 $A$ 和发射概率 $B$，$\lambda=(A,B)$
+</div><p>对于天气问题或词性标注问题，我们不需要学习模型参数，但是 Pomegranate 支持这一功能。</p>
+<h3 id="&#23454;&#29616;&#65306;&#35745;&#31639;&#24207;&#21015;&#20284;&#28982;&#29575;">&#23454;&#29616;&#65306;&#35745;&#31639;&#24207;&#21015;&#20284;&#28982;&#29575;<a class="anchor-link" href="#&#23454;&#29616;&#65306;&#35745;&#31639;&#24207;&#21015;&#20284;&#28982;&#29575;">&#182;</a></h3><p>我们可以使用<a href="https://en.wikipedia.org/wiki/Forward_algorithm">前向算法</a>计算 HMM 网络的观察序列的似然率。Pomegranate 提供了 <code>HMM.forward()</code> 方法，用于计算显示在 HMM 中匹配每个观察量和每个状态的似然率的完整矩阵，以及 <code>HMM.log_probability()</code> 方法，用于计算指定模型生成观察序列的所有可能隐藏状态路径的累积似然率。</p>
+<p>请在下个部分填写示例观察序列代码，然后使用 <code>forward()</code> 和 <code>log_probability()</code> 方法评估序列。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: input a sequence of &#39;yes&#39;/&#39;no&#39; values in the list below for testing</span>
+<span class="n">observations</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">]</span>
+
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">observations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;You need to choose a sequence of &#39;yes&#39;/&#39;no&#39; observations to test&quot;</span>
+
+<span class="c1"># TODO: use model.forward() to calculate the forward matrix of the observed sequence,</span>
+<span class="c1"># and then use np.exp() to convert from log-likelihood to likelihood</span>
+<span class="n">forward_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">observations</span><span class="p">))</span>
+
+<span class="c1"># TODO: use model.log_probability() to calculate the all-paths likelihood of the</span>
+<span class="c1"># observed sequence and then use np.exp() to convert log-likelihood to likelihood</span>
+<span class="n">probability_percentage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">log_probability</span><span class="p">(</span><span class="n">observations</span><span class="p">))</span>
+
+<span class="c1"># Display the forward probabilities</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;         &quot;</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">+</span><span class="mi">6</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">states</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">observations</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &lt;start&gt; &quot;</span> <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="mi">0</span> <span class="k">else</span> <span class="n">observations</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:.0f}</span><span class="s2">%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">forward_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)</span>
+                  <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">states</span><span class="p">)))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The likelihood over all possible paths &quot;</span> <span class="o">+</span> \
+      <span class="s2">&quot;of this model producing the sequence </span><span class="si">{}</span><span class="s2"> is </span><span class="si">{:.2f}</span><span class="s2">%</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">observations</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">probability_percentage</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Rainy</span>      <span class="n">Sunny</span>      <span class="n">Example</span> <span class="n">Model</span><span class="o">-</span><span class="n">start</span>      <span class="n">Example</span> <span class="n">Model</span><span class="o">-</span><span class="n">end</span>   
+     <span class="o">&lt;</span><span class="n">start</span><span class="o">&gt;</span>      <span class="mi">0</span><span class="o">%</span>         <span class="mi">0</span><span class="o">%</span>               <span class="mi">100</span><span class="o">%</span>                     <span class="mi">0</span><span class="o">%</span>          
+       <span class="n">yes</span>       <span class="mi">40</span><span class="o">%</span>         <span class="mi">5</span><span class="o">%</span>                <span class="mi">0</span><span class="o">%</span>                      <span class="mi">0</span><span class="o">%</span>          
+        <span class="n">no</span>        <span class="mi">5</span><span class="o">%</span>        <span class="mi">18</span><span class="o">%</span>                <span class="mi">0</span><span class="o">%</span>                      <span class="mi">0</span><span class="o">%</span>          
+       <span class="n">yes</span>        <span class="mi">5</span><span class="o">%</span>         <span class="mi">2</span><span class="o">%</span>                <span class="mi">0</span><span class="o">%</span>                      <span class="mi">0</span><span class="o">%</span>          
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The likelihood over all possible paths of this model producing the sequence ['yes', 'no', 'yes'] is 6.92%</p>
+<p>​</p>
+<h3 id="&#23454;&#29616;&#65306;&#35299;&#30721;&#26368;&#21487;&#33021;&#30340;&#38544;&#34255;&#29366;&#24577;&#24207;&#21015;">&#23454;&#29616;&#65306;&#35299;&#30721;&#26368;&#21487;&#33021;&#30340;&#38544;&#34255;&#29366;&#24577;&#24207;&#21015;<a class="anchor-link" href="#&#23454;&#29616;&#65306;&#35299;&#30721;&#26368;&#21487;&#33021;&#30340;&#38544;&#34255;&#29366;&#24577;&#24207;&#21015;">&#182;</a></h3><p><a href="https://en.wikipedia.org/wiki/Viterbi_algorithm">维特比算法</a>会计算生成特定观察序列似然率最高的单个路径。Pomegranate 提供了 <code>HMM.viterbi()</code> 方法，用于计算隐藏状态序列和对应的维特比路径的似然率。</p>
+<p>这称之为“解码”，因为我们使用观察序列解码相应的隐藏状态序列。对于词性标注问题来说，隐藏状态映射到词性，观察结果映射到句子。给定一个句子，维特比解码会找到对应于该句子的概率最高的词性标签序列。</p>
+<p>请在下个部分填写在上方用过的相同示例观察序列代码，然后使用 <code>model.viterbi()</code> 方法计算似然率和最有可能的状态序列。将观察序列的维特比似然率与前向算法似然率进行比较。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: input a sequence of &#39;yes&#39;/&#39;no&#39; values in the list below for testing</span>
+<span class="n">observations</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">]</span>
+
+<span class="c1"># TODO: use model.viterbi to find the sequence likelihood &amp; the most likely path</span>
+<span class="n">viterbi_likelihood</span><span class="p">,</span> <span class="n">viterbi_path</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">viterbi</span><span class="p">(</span><span class="n">observations</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The most likely weather sequence to have generated &quot;</span> <span class="o">+</span> \
+      <span class="s2">&quot;these observations is </span><span class="si">{}</span><span class="s2"> at </span><span class="si">{:.2f}</span><span class="s2">%.&quot;</span>
+      <span class="o">.</span><span class="n">format</span><span class="p">([</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">viterbi_path</span><span class="p">[</span><span class="mi">1</span><span class="p">:]],</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">viterbi_likelihood</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">The</span> <span class="n">most</span> <span class="n">likely</span> <span class="n">weather</span> <span class="n">sequence</span> <span class="n">to</span> <span class="n">have</span> <span class="n">generated</span> <span class="n">these</span> <span class="n">observations</span> <span class="ow">is</span> <span class="p">[</span><span class="s1">&#39;Rainy&#39;</span><span class="p">,</span> <span class="s1">&#39;Sunny&#39;</span><span class="p">,</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">]</span> <span class="n">at</span> <span class="mf">2.30</span><span class="o">%.</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#21069;&#21521;&#20284;&#28982;&#29575;&#19982;&#32500;&#29305;&#27604;&#20284;&#28982;&#29575;">&#21069;&#21521;&#20284;&#28982;&#29575;&#19982;&#32500;&#29305;&#27604;&#20284;&#28982;&#29575;<a class="anchor-link" href="#&#21069;&#21521;&#20284;&#28982;&#29575;&#19982;&#32500;&#29305;&#27604;&#20284;&#28982;&#29575;">&#182;</a></h3><p>运行以下单元格，看看每个观察序列（长度为 3）的似然率，并与维特比路径进行比较。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
+
+<span class="n">observations</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">]</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Sunny&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Sunny&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">.</span><span class="mi">8</span><span class="p">),</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">.</span><span class="mi">2</span><span class="p">)},</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Sunny&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">.</span><span class="mi">4</span><span class="p">),</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">.</span><span class="mi">6</span><span class="p">)}}</span>
+<span class="n">e</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Sunny&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;yes&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;no&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">.</span><span class="mi">9</span><span class="p">)},</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">:{</span><span class="s1">&#39;yes&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">.</span><span class="mi">8</span><span class="p">),</span> <span class="s1">&#39;no&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">.</span><span class="mi">2</span><span class="p">)}}</span>
+<span class="n">o</span> <span class="o">=</span> <span class="n">observations</span>
+<span class="n">k</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">vprob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">viterbi</span><span class="p">(</span><span class="n">o</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The likelihood of observing </span><span class="si">{}</span><span class="s2"> if the weather sequence is...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">[[</span><span class="s1">&#39;Sunny&#39;</span><span class="p">,</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">]]</span><span class="o">*</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">k</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span><span class="o">+</span><span class="n">e</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="n">e</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span> <span class="o">+</span> <span class="n">e</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">]]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{}</span><span class="s2"> is </span><span class="si">{:.2f}</span><span class="s2">% </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">k</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot; &lt;-- Viterbi path&quot;</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">vprob</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The total likelihood of observing </span><span class="si">{}</span><span class="s2"> over all possible paths is </span><span class="si">{:.2f}</span><span class="s2">%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="nb">sum</span><span class="p">(</span><span class="n">k</span><span class="p">)))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">The</span> <span class="n">likelihood</span> <span class="n">of</span> <span class="n">observing</span> <span class="p">[</span><span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">the</span> <span class="n">weather</span> <span class="n">sequence</span> <span class="ow">is</span><span class="o">...</span>
+	<span class="p">(</span><span class="s1">&#39;Sunny&#39;</span><span class="p">,</span> <span class="s1">&#39;Sunny&#39;</span><span class="p">,</span> <span class="s1">&#39;Sunny&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="mf">2.59</span><span class="o">%</span> 
+	<span class="p">(</span><span class="s1">&#39;Sunny&#39;</span><span class="p">,</span> <span class="s1">&#39;Sunny&#39;</span><span class="p">,</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="mf">5.18</span><span class="o">%</span>  <span class="o">&lt;--</span> <span class="n">Viterbi</span> <span class="n">path</span>
+	<span class="p">(</span><span class="s1">&#39;Sunny&#39;</span><span class="p">,</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">,</span> <span class="s1">&#39;Sunny&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="mf">0.07</span><span class="o">%</span> 
+	<span class="p">(</span><span class="s1">&#39;Sunny&#39;</span><span class="p">,</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">,</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="mf">0.86</span><span class="o">%</span> 
+	<span class="p">(</span><span class="s1">&#39;Rainy&#39;</span><span class="p">,</span> <span class="s1">&#39;Sunny&#39;</span><span class="p">,</span> <span class="s1">&#39;Sunny&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="mf">0.29</span><span class="o">%</span> 
+	<span class="p">(</span><span class="s1">&#39;Rainy&#39;</span><span class="p">,</span> <span class="s1">&#39;Sunny&#39;</span><span class="p">,</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="mf">0.58</span><span class="o">%</span> 
+	<span class="p">(</span><span class="s1">&#39;Rainy&#39;</span><span class="p">,</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">,</span> <span class="s1">&#39;Sunny&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="mf">0.05</span><span class="o">%</span> 
+	<span class="p">(</span><span class="s1">&#39;Rainy&#39;</span><span class="p">,</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">,</span> <span class="s1">&#39;Rainy&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="mf">0.58</span><span class="o">%</span> 
+
+<span class="n">The</span> <span class="n">total</span> <span class="n">likelihood</span> <span class="n">of</span> <span class="n">observing</span> <span class="p">[</span><span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">]</span> <span class="n">over</span> <span class="nb">all</span> <span class="n">possible</span> <span class="n">paths</span> <span class="ow">is</span> <span class="mf">10.20</span><span class="o">%</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#24685;&#21916;&#65281;">&#24685;&#21916;&#65281;<a class="anchor-link" href="#&#24685;&#21916;&#65281;">&#182;</a></h3><p>你已经完成了 HMM 准备工作。你应该已经掌握完成词性标签器项目所需的所有工具。</p>
+
+</div>
+</div>
 </div>
     </div>
   </div>
