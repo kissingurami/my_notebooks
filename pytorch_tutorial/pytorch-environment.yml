@@ -1,0 +1,26 @@
+name: pytorch
+channels:
+  - conda-forge
+  - defaults
+  - pytorch
+dependencies:
+  - python=3.7
+  - _pytorch_select=0.2=gpu_0
+  - numpy
+  - mkl
+  - holoviews
+  - jupyter
+  - pandas
+  - matplotlib
+  - seaborn
+  - pytorch
+  - torchvision
+  - cudatoolkit=10.1
+  - pip:
+    - tqdm
+    - pillow
+    - packaging
+    - appdirs
+    - holoviews
+    - gpustat
+    - sklearn
