@@ -1,6 +1,6 @@
 #!/bin/bash
 
-name=keras-flask-dog-breed-webapp
+name=dog
 docker stop $name
 docker rm $name
 docker run --name $name --detach \
