@@ -9,7 +9,14 @@ from tqdm import tqdm
 import cv2
 from keras.applications.resnet50 import ResNet50
 from keras.applications.resnet50 import preprocess_input
+from keras.applications.imagenet_utils import decode_predictions
 
+from enum import Enum
+
+class IsDog(Enum):
+    yes = 1
+    no  = 2
+    neithor = 3
 
 class DogBreedDetector:
 
@@ -85,16 +92,22 @@ class DogBreedDetector:
 
     def detect_breed(self, image_path):
         print(image_path)
+        isDog = IsDog.yes
         if self.face_detector(image_path):
             print("Hello, human!")
+            isDog = IsDog.no
         elif self.dog_detector(image_path):
             print("Hello, dog!")
         else:
+            isDog = IsDog.neithor
             print("Error: Neither a human face or a dog was detected.\n")
-            return
+            return isDog, None
+        img = preprocess_input(self.path_to_tensor(image_path))
+        preds = self.ResNet50_model.predict(img)
         print("You look like a ...")
         # print(self.network_predict_breed(image_path))
-        print()
+        print('predicts:', decode_predictions(preds, top=1))
+        return isDog, preds
 
     def extract_Resnet50(self, tensor):
         from keras.applications.resnet50 import ResNet50, preprocess_input
