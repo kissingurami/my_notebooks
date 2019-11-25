@@ -88,88 +88,30 @@ def dog_detector(img_path):
     return ((prediction <= 268) & (prediction >= 151))
 
 
-### TODO: Test the performance of the dog_detector function
-### on the images in human_files_short and dog_files_short.
-
-import time
-
-human_count = 0
-dog_count = 0
-
-start_time = time.time()
-
-for i in range(10):
-    ## Test for Human faces
-    if dog_detector(human_files_short[i]):
-        human_count += 1
-    ## Test it on dog faces next
-    if dog_detector(dog_files_short[i]):
-        dog_count +=1
-stop_time = time.time()
-
-duration = stop_time - start_time
-
-print("Percentage of dog image detected in the Human Files is {}%".format(human_count))
-print("Percentage of dog image detected in the Dog Files is {}%".format(dog_count))
-print("Time taken in seconds for both detection algorithms on 100 samples each is : {:4.2f}".format(duration))
-
-
-from PIL import ImageFile
-ImageFile.LOAD_TRUNCATED_IMAGES = True
-
-# pre-process the data for Keras
-test_tensors = paths_to_tensor(test_files).astype('float32')/255
-
 from keras.layers import Conv2D, MaxPooling2D, GlobalAveragePooling2D, Input, concatenate
 from keras.layers import Dropout, Flatten, Dense
 from keras.models import Sequential, Model
 
-model = Sequential()
+bottleneck_features = np.load('data/bottleneck_features/DogVGG16Data.npz')
+train_VGG16 = bottleneck_features['train']
+valid_VGG16 = bottleneck_features['valid']
+test_VGG16 = bottleneck_features['test']
 
-### TODO: Define your architecture.
-#LeNet based inception layer model will be used.
-input_shape = (224, 224, 3)
-input_img = Input(shape = input_shape)
+print("Shape of train_VGG16: {}".format(train_VGG16.shape))
+print("Shape of valid_VGG16: {}".format(valid_VGG16.shape))
+print("Shape of test_VGG16: {}".format(test_VGG16.shape))
 
-# First Convolution Layer
-conv_1 = Conv2D(4, (5,5), strides =(1,1), padding='same', activation='relu')(input_img)
+VGG16_model = Sequential()
+VGG16_model.add(GlobalAveragePooling2D(input_shape=train_VGG16.shape[1:]))
+VGG16_model.add(Dense(133, activation='softmax'))
 
-# Max Pool Layer
-maxpool1 = MaxPooling2D((2,2))(conv_1)
+VGG16_model.summary()
 
-# Second Conv layer
-conv_2 = Conv2D(4, (3,3), strides=(2,2), padding='same', activation='relu')(maxpool1)
-
-# First inception Layer
-path1_1 = Conv2D(8, (1,1), padding='same', activation='relu')(conv_2)
-path1_1 = Conv2D(8, (3,3), padding='same', activation='relu')(path1_1)
-
-path1_2 = Conv2D(8, (1,1), padding='same', activation='relu')(conv_2)
-path1_2 = Conv2D(8, (5,5), padding='same', activation='relu')(path1_2)
-
-path1_3 = MaxPooling2D((3,3), strides=(1,1), padding='same')(conv_2)
-path1_3 = Conv2D(8, (1,1), padding='same', activation='relu')(path1_3)
-
-inception_out1 = concatenate([path1_1, path1_2, path1_3], axis = 3)
-
-maxpool2 = MaxPooling2D((2,2))(inception_out1)
-
-interim_1 = Conv2D(4, (1,1), padding='same', activation='relu')(maxpool2)
-
-fc1 = Flatten()(interim_1)
-
-out = Dense(133, activation='softmax')(fc1)
-
-model = Model(inputs = input_img, outputs = out)
-
-model.summary()
-
-
-model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-
-model.load_weights('saved_models/weights.best.from_scratch.hdf5')
+VGG16_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+VGG16_model.load_weights('saved_models/weights.best.VGG16.hdf5')
 # get index of predicted dog breed for each image in test set
-dog_breed_predictions = [np.argmax(model.predict(np.expand_dims(tensor, axis=0))) for tensor in test_tensors]
+VGG16_predictions = [np.argmax(VGG16_model.predict(np.expand_dims(feature, axis=0))) for feature in test_VGG16]
+
 # report test accuracy
-test_accuracy = 100*np.sum(np.array(dog_breed_predictions)==np.argmax(test_targets, axis=1))/len(dog_breed_predictions)
+test_accuracy = 100*np.sum(np.array(VGG16_predictions)==np.argmax(test_targets, axis=1))/len(VGG16_predictions)
 print('Test accuracy: %.4f%%' % test_accuracy)
