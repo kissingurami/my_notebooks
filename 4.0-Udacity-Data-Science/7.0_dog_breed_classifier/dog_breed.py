@@ -2,6 +2,9 @@ from sklearn.datasets import load_files
 from keras.utils import np_utils
 import numpy as np
 from glob import glob
+from keras.layers import Conv2D, MaxPooling2D, GlobalAveragePooling2D, Input, concatenate
+from keras.layers import Dropout, Flatten, Dense
+from keras.models import Sequential, Model
 
 # define function to load train, test, and validation datasets
 def load_dataset(path):
@@ -20,22 +23,10 @@ dog_names = [item[20:-1] for item in sorted(glob("data/dogImages/train/*/"))]
 
 # print statistics about the dataset
 print('There are %d total dog categories.' % len(dog_names))
-print('There are %s total dog images.\n' % len(np.hstack([train_files, valid_files, test_files])))
-print('There are %d training dog images.' % len(train_files))
-print('There are %d validation dog images.' % len(valid_files))
-print('There are %d test dog images.'% len(test_files))
 
 
 import random
 random.seed(8675309)
-
-# load filenames in shuffled human dataset
-human_files = np.array(glob("data/lfw/*/*"))
-random.shuffle(human_files)
-
-# print statistics about the dataset
-print('There are %d total human images.' % len(human_files))
-
 
 import cv2
 # extract pre-trained face detector
@@ -47,13 +38,6 @@ def face_detector(img_path):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray)
     return len(faces) > 0
-
-
-human_files_short = human_files[:100]
-dog_files_short = train_files[:100]
-# Do NOT modify the code above this line.
-
-
 
 from keras.applications.resnet50 import ResNet50
 # define ResNet50 model
@@ -88,30 +72,52 @@ def dog_detector(img_path):
     return ((prediction <= 268) & (prediction >= 151))
 
 
-from keras.layers import Conv2D, MaxPooling2D, GlobalAveragePooling2D, Input, concatenate
-from keras.layers import Dropout, Flatten, Dense
-from keras.models import Sequential, Model
+network = 'Xception'
 
-bottleneck_features = np.load('data/bottleneck_features/DogVGG16Data.npz')
-train_VGG16 = bottleneck_features['train']
-valid_VGG16 = bottleneck_features['valid']
-test_VGG16 = bottleneck_features['test']
+if network =='ResNet-50':
+    bottleneck_features_network = np.load('data/bottleneck_features/DogResnet50Data.npz')
+elif network == 'Inception':
+    bottleneck_features_network = np.load('data/bottleneck_features/DogInceptionV3Data.npz')
+elif network =='Xception':
+    bottleneck_features_network = np.load('data/bottleneck_features/DogXceptionData.npz')
+elif network =='VGG-19':
+    bottleneck_features_network = np.load('data/bottleneck_features/DogVGG19Data.npz')
 
-print("Shape of train_VGG16: {}".format(train_VGG16.shape))
-print("Shape of valid_VGG16: {}".format(valid_VGG16.shape))
-print("Shape of test_VGG16: {}".format(test_VGG16.shape))
+train_network = bottleneck_features_network['train']
+valid_network = bottleneck_features_network['valid']
+test_network = bottleneck_features_network['test']
 
-VGG16_model = Sequential()
-VGG16_model.add(GlobalAveragePooling2D(input_shape=train_VGG16.shape[1:]))
-VGG16_model.add(Dense(133, activation='softmax'))
+print("Shape of train_resnet: {}".format(train_network.shape))
+print("Shape of valid_resnet: {}".format(valid_network.shape))
+print("Shape of test_resnet: {}".format(test_network.shape))
 
-VGG16_model.summary()
+Network_model = Sequential()
+Network_model.add(GlobalAveragePooling2D(input_shape=train_network.shape[1:]))
+Network_model.add(Dense(133, activation='softmax'))
+Network_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
-VGG16_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
-VGG16_model.load_weights('saved_models/weights.best.VGG16.hdf5')
-# get index of predicted dog breed for each image in test set
-VGG16_predictions = [np.argmax(VGG16_model.predict(np.expand_dims(feature, axis=0))) for feature in test_VGG16]
+model_filepath = 'saved_models/weights.best.' + network + '.hd5'
+Network_model.load_weights(model_filepath)
+print("The best weights for the {} model have been loaded".format(network))
 
-# report test accuracy
-test_accuracy = 100*np.sum(np.array(VGG16_predictions)==np.argmax(test_targets, axis=1))/len(VGG16_predictions)
-print('Test accuracy: %.4f%%' % test_accuracy)
+# predictions = [np.argmax(Network_model.predict(np.expand_dims(feat, axis=0))) for feat in test_network]
+# # report test accuracy
+# test_accuracy = 100*np.sum(np.array(predictions)==np.argmax(test_targets, axis=1))/len(predictions)
+# print('Test accuracy: %.4f%%' % test_accuracy)
+
+
+from extract_bottleneck_features import *
+
+def network_predict_breed(img_path):
+    # extract bottleneck features
+    bottleneck_feature = extract_Xception(path_to_tensor(img_path))
+    # obtain predicted vector
+    predicted_vector = Network_model.predict(bottleneck_feature)
+    # return dog breed that is predicted by the model
+    return dog_names[np.argmax(predicted_vector)]
+
+index = 13
+print("true bread:   ", dog_names[np.argmax(valid_targets[index])])
+print("predict breed:", network_predict_breed(valid_files[index]))
+
+print(network_predict_breed("images/Brittany_02625.jpg"))
