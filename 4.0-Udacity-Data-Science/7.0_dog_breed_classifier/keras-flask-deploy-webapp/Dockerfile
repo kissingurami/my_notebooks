@@ -1,4 +1,4 @@
-FROM python:2.7.16-slim-stretch
+FROM python:3.6-slim-stretch
 RUN apt-get update && apt-get install -y procps vim libglib2.0 libsm6 libxext6 libxrender-dev
 
 COPY . /usr/src/app
