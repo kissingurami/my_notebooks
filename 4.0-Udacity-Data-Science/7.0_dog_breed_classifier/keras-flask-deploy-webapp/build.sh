@@ -1,2 +1,2 @@
 
-docker build -t keras_flask_app .
+docker build -t dog_breed_classifier .
