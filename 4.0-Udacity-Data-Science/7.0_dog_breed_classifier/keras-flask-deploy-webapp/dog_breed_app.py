@@ -46,8 +46,8 @@ def model_predict(img_path, model):
     x = preprocess_input(x, mode='caffe')
 
     # preds = model.predict(x)
-    isDog, preds = dog_detector.detect_breed(img_path)
-    return isDog, preds
+    isDog, pred = dog_detector.detect_breed(img_path)
+    return isDog, pred
 
 
 @app.route('/', methods=['GET'])
@@ -70,18 +70,18 @@ def upload():
 
         # Make prediction
         # preds = model_predict(file_path, model)
-        isDog, preds = model_predict(file_path, None)
+        isDog, pred_breed = model_predict(file_path, None)
         if isDog == IsDog.neithor:
             return 'Neither a human face or a dog was detected.'
 
         # Process your result for human
         # pred_class = preds.argmax(axis=-1)            # Simple argmax
-        pred_class = decode_predictions(preds, top=1)   # ImageNet Decode
-        breed = str(pred_class[0][0][1])               # Convert to string
+        # pred_class = decode_predictions(preds, top=1)   # ImageNet Decode
+        # breed = str(pred_class[0][0][1])               # Convert to string
         if isDog == IsDog.yes:
-            return 'Hello Dog! You look like a ...\n' + breed
+            return 'Hello Dog! You look like a ...\n' + pred_breed
         elif isDog == IsDog.no:
-            return 'Hello Human! You look like a ...\n' + breed
+            return 'Hello Human! You look like a ...\n' + pred_breed
 
     return None
 

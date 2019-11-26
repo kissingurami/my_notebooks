@@ -44,8 +44,8 @@ class DogBreedDetector:
         self.Network_model.compile(loss='categorical_crossentropy',
                               optimizer='rmsprop', metrics=['accuracy'])
 
-        model_filepath = 'saved_models/weights.best.' + self.network + '.hd5'
-        # self.Network_model.load_weights(model_filepath)
+        model_filepath = 'models/weights.best.' + self.network + '.hd5'
+        self.Network_model.load_weights(model_filepath)
         print("The best weights for the {} model have been loaded".format(self.network))
 
         print("Warm up!")
@@ -102,12 +102,14 @@ class DogBreedDetector:
             isDog = IsDog.neithor
             print("Error: Neither a human face or a dog was detected.\n")
             return isDog, None
-        img = preprocess_input(self.path_to_tensor(image_path))
-        preds = self.ResNet50_model.predict(img)
+
         print("You look like a ...")
-        # print(self.network_predict_breed(image_path))
-        print('predicts:', decode_predictions(preds, top=1))
-        return isDog, preds
+        pred = self.network_predict_breed(image_path)
+        print(pred)
+        # img = preprocess_input(self.path_to_tensor(image_path))
+        # preds = self.ResNet50_model.predict(img)
+        # print('predicts:', decode_predictions(preds, top=1))
+        return isDog, pred
 
     def extract_Resnet50(self, tensor):
         from keras.applications.resnet50 import ResNet50, preprocess_input
@@ -119,4 +121,3 @@ class DogBreedDetector:
 
 if __name__ == '__main__':
     dog_detector = DogBreedDetector()
-    dog_detector.detect_breed("images/Brittany_02625.jpg")
