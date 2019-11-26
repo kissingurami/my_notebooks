@@ -7,4 +7,4 @@ docker run --name $name --detach \
         -p 3000:3000 \
         -p 5000:5000 \
         -p 2222:2222 \
-        keras_flask_app 
+        dog_breed_classifier
