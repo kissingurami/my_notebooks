@@ -8,3 +8,4 @@ tensorflow-gpu
 tqdm 
 opencv-python
 scikit-learn
+jupyter
